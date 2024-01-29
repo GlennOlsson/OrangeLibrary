@@ -1,0 +1,5 @@
+
+CREATE TABLE subscribers (
+	id SERIAL PRIMARY KEY,
+	email VARCHAR(512) UNIQUE NOT NULL
+);

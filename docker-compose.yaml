@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - ENV_FILE_PATH=./.env
+    volumes:
+      - .:/app
+    command: .build/debug/YourSwiftApp
+    depends_on:
+      - db
+    environment:
+      POSTGRES_HOST: db
+    networks:
+      - mail-net
+
+  db:
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+      args:
+        - INIT_PATH=./db/init/*
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_INITDB_ARGS="--locale-provider=icu --locale=en_US.utf8 --icu-locale=en"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      mail-net:
+        aliases:
+          - postgresdb
+
+volumes:
+  postgres-data:
+
+networks:
+  mail-net:
+    driver: bridge
