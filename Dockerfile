@@ -1,5 +1,5 @@
 # Use an official Swift runtime as a parent image
-FROM swift:latest
+FROM swift:5.9.2-slim
 
 # Set the working directory in the container
 WORKDIR /app
