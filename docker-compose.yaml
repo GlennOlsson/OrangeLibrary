@@ -22,10 +22,11 @@ services:
       dockerfile: db/Dockerfile
       args:
         - INIT_PATH=./db/init/*
+        - CONFIG_FILE_PATH=./db/postgres.conf
     env_file:
       - .env
     environment:
-      - POSTGRES_INITDB_ARGS="--locale-provider=icu --locale=en_US.utf8 --icu-locale=en"
+      - POSTGRES_INITDB_ARGS="--locale-provider=icu --locale=en_US.utf8 --icu-locale=en --config_file=/etc/postgres/postgres.conf"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     networks:
@@ -35,6 +36,7 @@ services:
 
 volumes:
   postgres-data:
+
 
 networks:
   mail-net:
