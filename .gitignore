@@ -11,5 +11,6 @@ DerivedData/
 .build
 .vscode
 .env
+secrets.txt
 
 postgres-data

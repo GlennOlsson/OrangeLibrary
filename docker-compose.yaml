@@ -4,17 +4,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - ENV_FILE_PATH=./.env
     volumes:
       - .:/app
-    command: .build/debug/YourSwiftApp
+      - /app/.build
+    env_file:
+      - .env
+    # command: .build/debug/YourSwiftApp
+    command: bash
+    ports:
+      - 8080:8080
     depends_on:
       - db
     environment:
       POSTGRES_HOST: db
+      PORT: 8080
     networks:
       - mail-net
+    tty: true
 
   db:
     build:
