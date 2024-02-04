@@ -38,8 +38,8 @@ class Config {
 
             for try await row in result {
 				let email = try? row.decode((String).self)
-				let v = row.indices
-                print("ROW", row, email, row.indices)
+				// let v = row.
+                print("ROW", row, email, row)
             }
 
 		print("got here")
