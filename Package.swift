@@ -31,7 +31,6 @@ let package = Package(
                 // Relative to Sources/mail-collect
             ]
         ),
-        .executableTarget(name: "Run", dependencies: [.target(name: "mail-collect")]),
         .testTarget(
             name: "mail-collectTests",
             dependencies: ["mail-collect"]

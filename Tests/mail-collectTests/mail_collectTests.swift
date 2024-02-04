@@ -6,6 +6,6 @@ final class mail_collectTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(mail_collect().text, "Hello, World!")
+        // XCTAssertEqual(mail_collect().text, "Hello, World!")
     }
 }

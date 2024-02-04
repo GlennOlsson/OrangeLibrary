@@ -1,6 +1,7 @@
 import Fluent
+import Vapor
 
-final class Subscriber: Model {
+final class Subscriber: Model, Content {
     static let schema = "subscribers"
 
 	 // Custom id as we are auto-incrementing the ID in the db
