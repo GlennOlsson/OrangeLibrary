@@ -12,8 +12,9 @@ import Darwin.C
 let package = Package(
     name: "mail-collect",
     dependencies: [
-        .package(url: "https://github.com/vapor/postgres-nio.git", from: "1.14.0"),
         .package(url: "https://github.com/vapor/vapor.git", from: "4.76.0"),
+        .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
+        .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.8.0"),
         
     ],
     targets: [
@@ -22,12 +23,12 @@ let package = Package(
         .executableTarget(
             name: "mail-collect",
             dependencies: [
-                .product(name: "PostgresNIO", package: "postgres-nio"),
-                .product(name: "Vapor", package: "vapor")
+                .product(name: "Vapor", package: "vapor"),
+                .product(name: "Fluent", package: "fluent"),
+                .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver")
             ],
             resources: [
                 // Relative to Sources/mail-collect
-                .process("Resources/secrets.txt")
             ]
         ),
         .executableTarget(name: "Run", dependencies: [.target(name: "mail-collect")]),

@@ -7,8 +7,6 @@ WORKDIR /app
 # Copy the current directory contents into the container
 COPY . /app
 
-RUN mv .env Sources/mail-collect/Resources/secrets.txt
-
 # Compile the Swift code
 # RUN swift build
 
