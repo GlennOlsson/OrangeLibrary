@@ -26,3 +26,9 @@ final class Subscriber: Model, Content {
         self.email = email
     }
 }
+
+extension Subscriber: Validatable {
+    static func validations(_ validations: inout Vapor.Validations) {
+        validations.add("email", as: String.self, is: .email)
+    }
+}

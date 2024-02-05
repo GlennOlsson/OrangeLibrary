@@ -18,30 +18,6 @@ defer {
 	app.shutdown() 
 }
 
-app.get("hello") { req async throws in
-	print("GOT REQUEST")
-
-	let database = req.db
-
-	let result = try await Subscriber.query(on: database).all()
-
-	return result
-}
-
-app.post("new") { req async throws in
-	print("GOT CREATE REQUEST")
-
-	// let bodyString = try req.content.decode(String.self)
-
-	// print(bodyString)
-
-	let subscriber = try req.content.decode(Subscriber.self)
-
-	let database = req.db
-
-	try await subscriber.create(on: database)
-
-	return subscriber
-}
+registerRoutes(app)
 
 try! app.run()

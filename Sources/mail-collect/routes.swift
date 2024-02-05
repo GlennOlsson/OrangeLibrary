@@ -1,14 +1,106 @@
 import Vapor
+import Fluent
  
-func createApp() -> Application {
-	let app = try! Application(.detect())
+let SUBSCRIBER_PATH: PathComponent = "subscriber"
+let SUBSCRIBER_ID_PARAM_NAME: String = "id"
+let SUBSCRIBER_ID_PARAM_PATH: PathComponent = ":\(SUBSCRIBER_ID_PARAM_NAME)"
 
-	app.get("hello") { req in
-		print("GOT REQUEST")
-		return "Hello, world."
+func _exists(email: String, on db: Database) async throws -> Bool {
+	return try await Subscriber.query(on: db).filter(\.$email == email).count() > 0
+}
+
+func _remove(with id: Int, on db: Database) async throws -> Subscriber {
+	guard let result = try await Subscriber.find(id, on: db) else {
+		throw Abort(.notFound)
 	}
 
-	return app
+	try await result.delete(on: db)
+
+	return result
+}
+
+func registerRoutes(_ app: Application) {
+
+	// Get all
+	// TODO: Add authentication
+	app.get(SUBSCRIBER_PATH) { req async throws in 
+		let result = try await Subscriber.query(on: req.db).all()
+		req.logger.info("Got all subscribers")
+		return result
+	}
+
+	// Create new. Only path without authentication
+	app.post(SUBSCRIBER_PATH) { req async throws in 
+		try Subscriber.validate(content: req)
+
+		let requestModel = try req.content.decode(Subscriber.self)
+
+		let emailExists = try? await _exists(email: requestModel.email, on: req.db)
+		guard emailExists != nil && !emailExists! else {
+			throw Abort(.badRequest, reason: "email is already registered")
+		} 
+
+		try await requestModel.create(on: req.db)
+
+		req.logger.info("New subscriber with email: \(requestModel.email) (id: \(requestModel.id ?? -1))")
+
+		return requestModel
+	}
+
+	// Get specific entry
+	// TODO: Add authentication
+	app.get(SUBSCRIBER_PATH, SUBSCRIBER_ID_PARAM_PATH) { req async throws in 
+		let idString = req.parameters.get(SUBSCRIBER_ID_PARAM_NAME) ?? "-1"
+		let id = Int(idString) ?? -1
+		guard let result = try await Subscriber.find(id, on: req.db) else {
+			throw Abort(.notFound)
+		}
+
+		req.logger.info("Got subscriber with id \(id)")
+		
+		return result
+	}
+
+	// Update entry
+	// TODO: Add authentication
+	app.put(SUBSCRIBER_PATH, SUBSCRIBER_ID_PARAM_PATH) { req async throws in 
+		try Subscriber.validate(content: req)
+
+		let requestModel = try req.content.decode(Subscriber.self)
+
+		let idString = req.parameters.get(SUBSCRIBER_ID_PARAM_NAME) ?? "-1"
+		let id = Int(idString) ?? -1
+		guard let result = try await Subscriber.find(id, on: req.db) else {
+			throw Abort(.notFound)
+		}
+
+		let emailExists = try? await _exists(email: requestModel.email, on: req.db)
+		guard emailExists != nil && !emailExists! else {
+			throw Abort(.badRequest, reason: "email is already registered")
+		} 
+
+		// Update more fields if necessary
+		result.email = requestModel.email
+
+		try await result.update(on: req.db)
+
+		req.logger.info("Updated subscriber \(id) to email \(requestModel.email)")
+		
+		return result
+	}
+
+	// Delete entry
+	// TODO: Add authentication
+	app.delete(SUBSCRIBER_PATH, SUBSCRIBER_ID_PARAM_PATH) { req async throws in 
+		let idString = req.parameters.get(SUBSCRIBER_ID_PARAM_NAME) ?? "-1"
+		let id = Int(idString) ?? -1
+
+		let result = try await _remove(with: id, on: req.db)
+
+		req.logger.info("Deleted subscriber with id \(id) and email \(result.email)")
+
+		return result
+	}
 }
 
 
