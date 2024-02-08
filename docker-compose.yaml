@@ -27,9 +27,9 @@ services:
       dockerfile: db/Dockerfile
       args:
         - INIT_PATH=./db/init/*
-        # - CONFIG_FILE_PATH=./db/postgres.conf
     env_file:
       - .env
+      - db/.env
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     networks:
