@@ -1,12 +1,20 @@
 import Vapor
 import Fluent
- 
+
+let ID_PARAM_NAME: String = "id"
+
 let SUBSCRIBER_PATH: PathComponent = "subscriber"
-let SUBSCRIBER_ID_PARAM_NAME: String = "id"
-let SUBSCRIBER_ID_PARAM_PATH: PathComponent = ":\(SUBSCRIBER_ID_PARAM_NAME)"
+let SUBSCRIBER_ID_PARAM_PATH: PathComponent = ":\(ID_PARAM_NAME)"
+
+let USER_PATH: PathComponent = "user"
+let USER_ID_PARAM_PATH: PathComponent = "user"
+
+func _get_by(email: String, on db: Database) async throws -> [Subscriber] {
+	return try await Subscriber.query(on: db).filter(\.$email == email).all()
+}
 
 func _exists(email: String, on db: Database) async throws -> Bool {
-	return try await Subscriber.query(on: db).filter(\.$email == email).count() > 0
+	return try await _get_by(email: email, on: db).count > 0
 }
 
 func _remove(with id: Int, on db: Database) async throws -> Subscriber {
@@ -50,7 +58,7 @@ func registerRoutes(_ app: Application) {
 	// Get specific entry
 	// TODO: Add authentication
 	app.get(SUBSCRIBER_PATH, SUBSCRIBER_ID_PARAM_PATH) { req async throws in 
-		let idString = req.parameters.get(SUBSCRIBER_ID_PARAM_NAME) ?? "-1"
+		let idString = req.parameters.get(ID_PARAM_NAME) ?? "-1"
 		let id = Int(idString) ?? -1
 		guard let result = try await Subscriber.find(id, on: req.db) else {
 			throw Abort(.notFound)
@@ -68,7 +76,7 @@ func registerRoutes(_ app: Application) {
 
 		let requestModel = try req.content.decode(Subscriber.self)
 
-		let idString = req.parameters.get(SUBSCRIBER_ID_PARAM_NAME) ?? "-1"
+		let idString = req.parameters.get(ID_PARAM_NAME) ?? "-1"
 		let id = Int(idString) ?? -1
 		guard let result = try await Subscriber.find(id, on: req.db) else {
 			throw Abort(.notFound)
@@ -92,7 +100,7 @@ func registerRoutes(_ app: Application) {
 	// Delete entry
 	// TODO: Add authentication
 	app.delete(SUBSCRIBER_PATH, SUBSCRIBER_ID_PARAM_PATH) { req async throws in 
-		let idString = req.parameters.get(SUBSCRIBER_ID_PARAM_NAME) ?? "-1"
+		let idString = req.parameters.get(ID_PARAM_NAME) ?? "-1"
 		let id = Int(idString) ?? -1
 
 		let result = try await _remove(with: id, on: req.db)
