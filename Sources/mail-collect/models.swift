@@ -133,6 +133,37 @@ extension User.Create: Validatable {
 }
 
 extension User {
+    final class Update: Content {
+        var username: String? = nil
+        var password: String? = nil
+        var authority: Int16? = nil
+    }
+}
+
+extension User {
+    /**
+        Update the current instance with the provided fields. Returns wether or not
+        any field was updated
+    */
+    func update(with update: User.Update) throws -> Bool{
+        var change = false
+        if(update.username != nil) {
+            self.username = update.username!
+            change = true
+        }
+        if(update.password != nil) {
+            self.passwordHash = try Bcrypt.hash(update.password!)
+            change = true
+        }
+        if(update.authority != nil) {
+            self.authority = update.authority!
+            change = true
+        }
+        return change
+    }
+}
+
+extension User {
     struct Response: Content {
         let id: Int
         let username: String
