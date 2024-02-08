@@ -11,7 +11,16 @@ let app = Application(env)
 // Otherwise cannot be reached from outside docker container
 app.http.server.configuration.hostname = "0.0.0.0"
 
-configureDatabase(app: app)
+
+let databaseConfig = createDatabaseConfig(
+	username: getEnvironment(.DATABASE_USER)!, 
+	password: getEnvironment(.DATABASE_PASSWORD)!, 
+	database: getEnvironment(.DATABASE)!
+)
+useDatabase(
+	on: app,
+	with: databaseConfig
+)
 
 let authenticatedApp = app.grouped(User.authenticator())
 
