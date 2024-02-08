@@ -13,11 +13,13 @@ app.http.server.configuration.hostname = "0.0.0.0"
 
 configureDatabase(app: app)
 
+let authenticatedApp = app.grouped(User.authenticator())
+
 defer { 
 	print("Shutting down...")
 	app.shutdown() 
 }
 
-registerRoutes(app)
+registerRoutes(auth: authenticatedApp, nonAuth: app)
 
 try! app.run()
