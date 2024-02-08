@@ -109,6 +109,24 @@ func registerRoutes(_ app: Application) {
 
 		return result
 	}
+
+	app.post(USER_PATH) { req async throws in 
+		try User.Create.validate(content: req)
+		let userRequest = try req.content.decode(User.Create.self)
+
+		guard userRequest.password == userRequest.confirmPassword else {
+			throw Abort(.badRequest, reason: "Passwords don't match")
+		}
+
+		let authority = userRequest.authority
+		// TODO: Check priveledge and if higher than requester, if not nil
+
+		let newUser = try User(username: userRequest.username, password: userRequest.password, authority: authority)
+
+		try await newUser.create(on: req.db)
+
+		return newUser.response
+	}
 }
 
 

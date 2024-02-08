@@ -69,7 +69,7 @@ final class User: Model {
     @ID(custom: "id", generatedBy: .database)
     var id: Int?
 
-    @Field(key: "user")
+    @Field(key: "username")
     var username: String
 
     /**
@@ -90,9 +90,12 @@ final class User: Model {
 
     init() { }
 
-    init(username: String, password: String, authority: Int16 = 1) throws {
+    /**
+        Default authority is 1
+    */
+    init(username: String, password: String, authority: Int16? = nil) throws {
         self.username = username
-        self.authority = authority
+        self.authority = authority ?? 1
         self.passwordHash = try Bcrypt.hash(password)
     }
 }
@@ -109,5 +112,44 @@ extension User: ModelAuthenticatable {
 extension User {
     func canPerform(action: Action) -> Bool{
         return self.authority >= action.rawValue
+    }
+}
+
+extension User {
+    final class Create: Content {
+        var username: String
+        var password: String
+        var confirmPassword: String
+        var authority: Int16? = nil
+    }
+}
+
+extension User.Create: Validatable {
+    static func validations(_ validations: inout Vapor.Validations) {
+        validations.add("username", as: String.self, is: !.empty)
+        validations.add("password", as: String.self, is: .count(8...30))
+        validations.add("confirmPassword", as: String.self, is: !.empty)
+    }
+}
+
+extension User {
+    struct Response: Content {
+        let id: Int
+        let username: String
+        let authority: Int16
+        let createdAt: Date?
+        let updatedAt: Date?
+    }
+}
+
+extension User {
+    var response: User.Response {
+        return User.Response(
+            id: self.id ?? -1, 
+            username: self.username, 
+            authority: self.authority, 
+            createdAt: self.createdAt, 
+            updatedAt: self.updatedAt
+        )
     }
 }
