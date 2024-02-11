@@ -33,6 +33,12 @@ extension Subscriber: Validatable {
     }
 }
 
+extension Subscriber: Equatable {
+    static func == (lhs: Subscriber, rhs: Subscriber) -> Bool {
+        return lhs.id == rhs.id && lhs.email == rhs.email
+    }
+}
+
 extension Subscriber {
     final class Update: Content {
         var email: String
