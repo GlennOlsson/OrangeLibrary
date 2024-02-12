@@ -8,9 +8,9 @@ WORKDIR /app
 COPY . /app
 
 # Compile the Swift code
-# RUN swift build
+RUN swift build
 
 # Expose the port the app runs on
 
 # Run the application
-# CMD ["./.build/debug/YourSwiftApp"]
+CMD ["swift", "run", "mail-collect"]
