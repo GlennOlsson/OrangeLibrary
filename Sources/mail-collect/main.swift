@@ -6,6 +6,6 @@ try LoggingSystem.bootstrap(from: &env)
 
 let app = Application(env)
 
-configure(app)
+configure(app: app)
 
 try! app.run()
