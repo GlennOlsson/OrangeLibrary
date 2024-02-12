@@ -19,6 +19,7 @@ services:
     networks:
       - mail-net
     tty: true
+    restart: unless-stopped
 
   db:
     build:
@@ -35,6 +36,7 @@ services:
       mail-net:
         aliases:
           - postgresdb
+    restart: unless-stopped
 
 volumes:
   postgres-data:
