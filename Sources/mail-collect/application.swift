@@ -26,10 +26,10 @@ func configure(app: Application) {
 
 	let authenticatedApp = app.grouped(User.authenticator())
 
-	defer { 
-		print("Shutting down...")
-		app.shutdown() 
-	}
+//	defer { 
+//		print("Shutting down...")
+//		app.shutdown() 
+//	}
 
 	registerRoutes(auth: authenticatedApp, nonAuth: app)
 }

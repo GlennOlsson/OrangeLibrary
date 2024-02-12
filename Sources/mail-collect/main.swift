@@ -9,3 +9,8 @@ let app = Application(env)
 configure(app: app)
 
 try! app.run()
+
+defer { 
+		print("Shutting down...")
+		app.shutdown() 
+}
