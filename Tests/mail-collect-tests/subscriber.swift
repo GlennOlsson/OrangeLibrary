@@ -7,7 +7,7 @@ import Logging
 
 
 final class SubscriberTests: XCTestCase {
-	let logger = Logger(label: "routes-tester")
+	let logger = Logger(label: "subsriber-tester")
 	
 	var app: Application!
 

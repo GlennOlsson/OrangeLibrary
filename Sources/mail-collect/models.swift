@@ -65,7 +65,7 @@ enum Action: Int16, CaseIterable {
     case deleteSubscriber = 52
 
     static func maxAuthority() -> Int16 {
-        Self.allCases.max(by: {$0.rawValue > $1.rawValue})?.rawValue ?? -1
+        Self.allCases.max(by: {$0.rawValue < $1.rawValue})?.rawValue ?? -1
     }
 }
 
@@ -127,6 +127,13 @@ extension User {
         var password: String
         var confirmPassword: String
         var authority: Int16? = nil
+
+        init(username: String, password: String, confirmPassword: String, authority: Int16? = nil) {
+            self.username = username
+            self.password = password
+            self.confirmPassword = confirmPassword
+            self.authority = authority
+        }
     }
 }
 

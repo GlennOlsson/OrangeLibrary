@@ -163,6 +163,10 @@ func registerRoutes(auth authenticated: RoutesBuilder, nonAuth unauthenticated: 
 			throw Abort(.badRequest, reason: "Passwords don't match")
 		}
 
+		guard try await !_exists(username: userRequest.username, on: req.db) else {
+			throw Abort(.badRequest, reason: "User already exists")
+		}
+
 		let newUser = try User(username: userRequest.username, password: userRequest.password, authority: authority)
 
 		try await newUser.create(on: req.db)
