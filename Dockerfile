@@ -10,7 +10,5 @@ COPY . /app
 # Compile the Swift code
 RUN swift build
 
-# Expose the port the app runs on
-
 # Run the application
 CMD ["swift", "run", "mail-collect"]
