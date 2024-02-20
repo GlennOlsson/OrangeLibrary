@@ -1,3 +1,3 @@
-INSERT INTO subscribers (email) VALUES ('glenn@glenn.se');
-INSERT INTO subscribers (email) VALUES ('someone@else.com');
-INSERT INTO subscribers (email) VALUES ('something@gmail.com');
+INSERT INTO subscribers (email, real_name) VALUES ('glenn@glenn.se', 'Glenn Olsson');
+INSERT INTO subscribers (email, real_name) VALUES ('someone@else.com', 'Glen Olson');
+INSERT INTO subscribers (email, real_name) VALUES ('something@gmail.com', 'Fakelen Olsfejk');

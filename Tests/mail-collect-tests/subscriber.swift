@@ -74,8 +74,8 @@ final class SubscriberTests: XCTestCase {
 	}
 
 	func testGetSubscribersReturnsSubscribers() async throws {
-		let sub1 = Subscriber(email: "someemail@gmail.com")
-		let sub2 = Subscriber(email: "someotheremail@gmail.com")
+		let sub1 = Subscriber(email: "someemail@gmail.com", name: "Some Realname")
+		let sub2 = Subscriber(email: "someotheremail@gmail.com", name: "Some Realname")
 
 		let auth = privilegeAuthHeader()
 
@@ -94,7 +94,7 @@ final class SubscriberTests: XCTestCase {
 	}
 
 	func testGetCreated() throws {
-		let sub = Subscriber(email: "someemail@gmail.com")
+		let sub = Subscriber(email: "someemail@gmail.com", name: "Some Realname")
 
 		var createdSubscriber: Subscriber!
 		try self.app.test(.POST, "subscriber", beforeRequest: { try $0.content.encode(sub) }) {resp in
@@ -102,6 +102,7 @@ final class SubscriberTests: XCTestCase {
 		}
 
 		XCTAssertEqual(sub.email, createdSubscriber.email)
+		XCTAssertEqual(sub.name, createdSubscriber.name)
 
 		try self.app.test(
 			.GET, 
@@ -116,7 +117,7 @@ final class SubscriberTests: XCTestCase {
 	}
 
 	func testCreateWithExistingEmailFails() throws {
-		let sub = Subscriber(email: "someemail@gmail.com")
+		let sub = Subscriber(email: "someemail@gmail.com", name: "Some Realname")
 
 		try self.app.test(.POST, "subscriber", beforeRequest: { try $0.content.encode(sub) })
 
@@ -127,7 +128,7 @@ final class SubscriberTests: XCTestCase {
 
 	// Assert that we can update the email of a subscriber
 	func testUpdateSubscriber() throws {
-		let sub = Subscriber(email: "someemail@gmail.com")
+		let sub = Subscriber(email: "someemail@gmail.com", name: "Some Realname")
 
 		var createdSubscriber: Subscriber!
 		try self.app.test(.POST, "subscriber", beforeRequest: { try $0.content.encode(sub) }) {resp in
@@ -136,10 +137,11 @@ final class SubscriberTests: XCTestCase {
 
 		let auth = privilegeAuthHeader()
 
-		let updatedSubscriber = Subscriber(email: "someotheremail@gmail.com")
+		let updatedSubscriber = Subscriber(email: "someotheremail@gmail.com", name: "New Realname")
 
 		// Make sure we're updating with new email
 		XCTAssertNotEqual(createdSubscriber.email, updatedSubscriber.email)
+		XCTAssertNotEqual(createdSubscriber.name, updatedSubscriber.name)
 
 		try self.app.test(.PUT, "subscriber/\(createdSubscriber.id!)", headers: auth, beforeRequest: { req in
 			try req.content.encode(updatedSubscriber)
@@ -151,8 +153,8 @@ final class SubscriberTests: XCTestCase {
 	}
 
 	func testUpdateWithExistingEmailFails() throws {
-		let sub1 = Subscriber(email: "someemail@gmail.com")
-		let sub2 = Subscriber(email: "someotheremail@gmail.com")
+		let sub1 = Subscriber(email: "someemail@gmail.com", name: "Some Realname")
+		let sub2 = Subscriber(email: "someotheremail@gmail.com", name: "Some Realname")
 
 		var sub1ID: Int!
 
@@ -188,7 +190,7 @@ final class SubscriberTests: XCTestCase {
 	}
 
 	func testGetDeletedSubscriberReturns404() throws {
-		let sub = Subscriber(email: "someemail@gmail.com")
+		let sub = Subscriber(email: "someemail@gmail.com", name: "Some Realname")
 
 		var receivedSubscriber: Subscriber!
 		try self.app.test(.POST, "subscriber", beforeRequest: { try $0.content.encode(sub) }) {resp in 

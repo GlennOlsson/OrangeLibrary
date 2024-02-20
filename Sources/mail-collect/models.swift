@@ -11,6 +11,9 @@ final class Subscriber: Model, Content, Encodable {
     @Field(key: "email")
     var email: String
 
+    @Field(key: "real_name")
+    var name: String?
+
 	@Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
 
@@ -21,9 +24,10 @@ final class Subscriber: Model, Content, Encodable {
     init() { }
 
 	// Convienience init
-    init(id: Int? = nil, email: String) {
+    init(id: Int? = nil, email: String, name: String? = nil) {
         self.id = id
         self.email = email
+        self.name = name
     }
 }
 

@@ -2,6 +2,7 @@
 CREATE TABLE subscribers (
 	id SERIAL PRIMARY KEY,
 	email VARCHAR(512) UNIQUE NOT NULL,
+	real_name VARCHAR(215),
 	created_at TIMESTAMP DEFAULT current_timestamp,
 	updated_at TIMESTAMP DEFAULT current_timestamp
 );
