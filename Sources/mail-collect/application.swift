@@ -9,6 +9,7 @@ func configure(app: Application) {
 	)
 	let cors = CORSMiddleware(configuration: corsConfiguration)
 	app.middleware.use(cors, at: .beginning)
+	app.middleware.use(WWWAuthenticationMiddleware())
 
 	// Otherwise cannot be reached from outside docker container
 	app.http.server.configuration.hostname = "0.0.0.0"
@@ -28,12 +29,8 @@ func configure(app: Application) {
 	// For HTML templating
 	app.views.use(.leaf)
 
-	let authenticatedApp = app.grouped(User.authenticator())
 
-//	defer { 
-//		print("Shutting down...")
-//		app.shutdown() 
-//	}
+	let authenticatedApp = app.grouped(User.authenticator())
 
 	registerRoutes(auth: authenticatedApp, nonAuth: app)
 }
