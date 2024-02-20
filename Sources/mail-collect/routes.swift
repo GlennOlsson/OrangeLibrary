@@ -244,9 +244,8 @@ func registerRoutes(auth authenticated: RoutesBuilder, nonAuth unauthenticated: 
 	}
 
 	// TODO: Make authenticated with X-Authenticated header whatever
-	unauthenticated.get("hello") { req async throws -> View in
-		// let requestingUser = try req.auth.require(User.self)
-		let requestingUser = try await User.find(1, on: req.db)!
+	authenticated.get("") { req async throws -> View in
+		let requestingUser = try req.auth.require(User.self)
 		try assertCanPerform(action: .readSubscriber, as: requestingUser)
 
 		let subscribers = try await Subscriber.query(on: req.db).all()
