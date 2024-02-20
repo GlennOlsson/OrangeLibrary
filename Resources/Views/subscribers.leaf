@@ -1,0 +1,55 @@
+<html>	
+	<head>
+		<style>
+			/* Apply styles to alternate table rows */
+			table {
+				border-collapse: collapse;
+				width: 100%;
+			}
+			th, td {
+				border: 1px solid #dddddd;
+				padding: 8px;
+				text-align: left;
+			}
+			/* Apply alternating background colors */
+			tr:nth-child(even) {
+				background-color: #f2f2f2; /* Gray color for even rows */
+			}
+			tr:nth-child(odd) {
+				background-color: #ffffff; /* White color for odd rows */
+			}
+		</style>
+		<script>
+			const onClick = (uid) => {
+				fetch(`/subscriber/${uid}`, {
+					method: "DELETE"
+				})
+			}
+		</script>
+	</head>
+	<body>
+		<h1>
+			Hello, #(user.username)!
+		</h1>
+
+		<table>
+			<tr>
+				<th>Email</th>
+				<th>Name</th>
+				<th>Added</th>
+				<th>Remove</th>
+			</tr>
+			#for(sub in subscribers):
+				<tr>
+					<td>#(sub.email)</td>
+					<td>#(sub.name)</td>
+					<td>#date(sub.createdAt)</td>
+					<td>
+						<button onclick="onClick(#(sub.id))">Remove #(name)</button>
+					</td>
+				</tr>
+			#endfor
+
+		</table>
+	</body>
+</html>
