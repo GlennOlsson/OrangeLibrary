@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-final class Subscriber: Model, Content {
+final class Subscriber: Model, Content, Encodable {
     static let schema = "subscribers"
 
 	 // Custom id as we are auto-incrementing the ID in the db
@@ -69,7 +69,7 @@ enum Action: Int16, CaseIterable {
     }
 }
 
-final class User: Model {
+final class User: Model, Encodable {
     static let schema = "users"
 
     @ID(custom: "id", generatedBy: .database)
@@ -197,3 +197,9 @@ extension User {
         )
     }
 }
+
+
+struct ViewParameters: Encodable {
+	let subscribers: [Subscriber]
+    let user: User
+};

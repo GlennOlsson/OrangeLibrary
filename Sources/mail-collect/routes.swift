@@ -41,6 +41,7 @@ func assertCanPerform(action: Action, as user: User) throws {
 	}
 }
 
+
 func registerRoutes(auth authenticated: RoutesBuilder, nonAuth unauthenticated: RoutesBuilder) {
 
 	// Create new. Only path without authentication
@@ -240,6 +241,18 @@ func registerRoutes(auth authenticated: RoutesBuilder, nonAuth unauthenticated: 
 		try await user.delete(on: req.db)
 
 		return user.response
+	}
+
+	// TODO: Make authenticated with X-Authenticated header whatever
+	unauthenticated.get("hello") { req async throws -> View in
+		// let requestingUser = try req.auth.require(User.self)
+		let requestingUser = try await User.find(1, on: req.db)!
+		try assertCanPerform(action: .readSubscriber, as: requestingUser)
+
+		let subscribers = try await Subscriber.query(on: req.db).all()
+		let passed = ViewParameters(subscribers: subscribers, user: requestingUser)
+
+		return try await req.view.render("subscribers", passed)
 	}
 }
 

@@ -1,4 +1,5 @@
 import Vapor
+import Leaf
 
 func configure(app: Application) {
 	let corsConfiguration = CORSMiddleware.Configuration(
@@ -23,6 +24,9 @@ func configure(app: Application) {
 		on: app,
 		with: databaseConfig
 	)
+
+	// For HTML templating
+	app.views.use(.leaf)
 
 	let authenticatedApp = app.grouped(User.authenticator())
 
