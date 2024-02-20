@@ -23,6 +23,8 @@
 			const onClick = (uid) => {
 				fetch(`/subscriber/${uid}`, {
 					method: "DELETE"
+				}).then(() => {
+					location.href = "/"
 				})
 			}
 		</script>
